@@ -21,3 +21,10 @@ reg lwage educ lexper female
 
 *V. Dummy
 reg actmth hsgpa study male colgpa
+
+*Interaccion
+
+gen econmale = male*econhs
+
+reg actmth econmale hsgpa study male econhs colgpa
+
