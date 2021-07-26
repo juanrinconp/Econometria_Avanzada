@@ -46,7 +46,7 @@
 
 
 <h3><strong>Formas Funcionales de las Regresiones</strong></h3>
-<span class="image fit"><img src="images/ff.png" alt="" style="width: 55vw; min-width: 330px;"/></span>
+<span class="image fit"><img src="images/ff.png" alt="" style="width: 35vw; min-width: 330px;"/></span>
 
 <h3>Regresión Nivel - nivel</h3>
 
@@ -297,24 +297,113 @@ Siguiendo la idea anterior, podemos decir que:</br>
 
 
 <div class="container">
+	<h3><strong> R cuadrado</strong></h3>
+	<p>El $R^{2}$ nos dice que tanto mis regresores explican la variación en y.
+	Matemáticamente tendremos que $R^{2}$ se escribe como:</br>
+
+
+	$$ R^{2} = \frac{\sum_{i=1}^{n}{(\hat{y} - \bar{y})^{2}}}{\sum_{i=1}^{n}{(y_{i} - \bar{y})^{2}}} = \frac{SSE}{SST} $$
+
+
+
+	Donde SSE es la suma explicada de cuadrados y SST es la suma total de cuadrados. Es importante notar que con el $R^{2}$ aumenta a medida que añadimos regresores. Es por esto que aparece el $R^{2} Ajustado$, en el cual el coeficiente puede disminuir si se añade un regresor que no aporta nada a nuestra regresión.</br>
+
+	Este R cuadrado lo podemos encontrar también en cada regresión que realizamos.</p>
 	<div class="row gtr-150">
 		<div class="col-6 col-12-medium">
+			<h3></h3>
 			<pre><code>
-
-ASDF
+<strong style="color:blue">reg</strong> lwage educ lexper female
 </code></pre>
 
 		</div>
 
 		<div class="col-6 col-12-medium imp-medium">
-			<span class="image fit"><img src="images/inter.png" alt="" /></span>
+			<span class="image fit"><img src="images/reg4.png" alt="" /></span>
 		</div>
 	</div>
+	<p>En este caso podemos decir que nuestros regresores explican un 39.4% de nuestra variable dependiente "actmth".
+Esto lo podemos ver en la esquina superior derecha de la tabla de regresión, en la parte que dice R-squared.</p>
 	</div>
 
 
+	<div class="container">
+		<h3><strong>Estadístico t</strong></h3>
+
+		<p>La distribución t con m grados de libertad se obtiene dividiendo una normal estándar $z$ por la raíz de una Chi cuadrado $\sqrt{X^{2}}$. El resultado se distribuye t con m grados de libertad. Despues de algo de matematicas llegamos a:
+
+$$ \frac{\hat\beta_{i} - q}{\sqrt{{\hat\sigma_{\epsilon}}^{2}(X'X)^{-1}}} \sim t_{n - k - 1} $$
+
+Para lo que nos interesa, al realizar una regresión utilizamos el estadístico t para ver si una estimación es estadísticamente significativa o no. Usualmente se usa que q = 0, para probar la significancia estadistica pero no tiene que ser necesariamente así.
+
+Específicamente podemos ver la significancia de una estimación a través del valor de la t o de su p-value (son equivalentes):
+
+Cuando ocurre que:</br>
+
+ - $p-value < $  nivel de significancia</br>
+ o</br>
+ - $t > $valor critico</br>
 
 
+
+entonces, rechazamos $H_{0}$ en favor de $H_{1}$.</br>
+
+
+$H_{0}$: La estimación no es significativa</br>
+
+$H_{1}$: La estimación es significativa.</p>
+		<div class="row gtr-150">
+
+				<span class="image fit"><img src="images/inter.png" alt="" style="width: 45vw; min-width: 330px;" /></span>
+		</div>
+	<p>	Volviendo a la regresión anterior diremos que nuestro regresor econmale no significativo ya que tiene un p-value de 0.59. Esto lo podemos ver en arriba a la derecha en la tabla.
+Si vemos los estadísticos t llegaríamos a la misma conclusión.</p>
+</div>
+
+
+
+
+
+
+<div class="container">
+	<h3><strong>Estadístico F</strong></h3>
+
+<p>La idea del estadístico F es imponer varias restricciones al mismo tiempo. El caso mas comun es ver si  $\beta_{1} =\beta_{2} = \beta_{3} = 0$, es decir, si estas 3 variables son conjuntamente no significativas. El estadístico F compara dos regresiones, una restringida y otra sin ninguna restricción. El punto es que si la suma de residuos al cuadrado de las dos regresiones es estadísticamente igual, es porque mi $H_{0}$ es verdad, y no la rechazaríamos. </br>
+
+
+El estadístico F puede ser visto en terminos del R cuadrado como:
+
+  $$ F = \frac{R^{2}/(n - k - 1)}{(1-R^{2}/(k))} \sim F_{r, n - k - 1} $$
+
+
+$H_{0}$: Las estimaciones no son significativas conjuntamente.</br>
+
+$H_{1}$: Las estimaciones son significativas conjuntamente.</br>
+
+
+En otras palabras, el estadístico F nos indica cuando nuestros regresores son conjuntamente significativos. Este estadístico resulta útil cuando hay alta correlación entre nuestros regresores, lo cual hace que el estadístico t no sea tan confiable para rechazar significancia.</br>
+
+En el punto anterior rechazamos significancia estadística de la variable econmale, lo cual nos haría pensar que debemos eliminar este regresor, pero si miramos el estadistico F...
+
+</p>
+	<div class="row gtr-150">
+		<div class="row gtr-150">
+
+				<span class="image fit"><img src="images/inter.png" alt="" style="width: 45vw; min-width: 330px;" /></span>
+		</div>
+	</div>
+<p>La probabilidad del estadístico F es practicamente 0, por lo que rechazamos $ H_{0} $, es decir, todos nuestros regresores son significativos conjuntamente.</p>
+</div>
+<div class="container">
+
+<h3>Bibliografía:</h3>
+<ul>
+<li> Verbeek, M. (2004), A Guide to Modern Econometrics.</li>
+<li> Wooldridge, Jeffrey M. (2018), Introductory Econometrics: A Modern Approach, Sixth Edition, Cengage Learning.</li>
+<li> Montenegro, A. (2018), Econometría Intermedia y Básica.</li>
+
+</ul>
+</div>
 
 
 </div>
