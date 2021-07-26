@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>Econometría Avanzada</title>
+		<title>Econometría Basica</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -14,12 +14,10 @@
 			<section id="header">
 				<div class="inner">
 					<span class="icon solid major fa-book-reader"></span>
-					<h1>Monitoria <strong>Econometría Avanzada</strong><br />
+					<h1>Simulaciones de<br /><strong>Montecarlo</strong>
 					</h1>
-					<p>Pontificia Universidad Javeriana</br>Juan Esteban Rincón Poveda</p>
-					<ul class="actions special">
-						<li><a href="#one" class="button scrolly">Inicio</a></li>
-					</ul>
+					<p>Pontificia Universidad Javeriana</p>
+
 				</div>
 			</section>
 
@@ -29,93 +27,334 @@
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 							<header class="major">
-								<h2>Monitoria<br />
-								Econometría Avanzada</h2>
+								<h2><strong>Econometría<br />
+								Basica</strong></h2>
 							</header>
-							<p>Acá encontrarán algunos ejercicios y explicaciónes realizadas usando el software  Stata  para la  clase de econometría avanzada. Específicamente encontraran demostraciones, simulaciones y explicaciónes de métodos
-							como lo son variables instrumentales, logit, probit, entre otros que buscan apoyar el aprendizaje del curso.
+							</div>
+							<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+						  <script>
+						  MathJax = {
+						    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+						  };
+						  </script>
+						  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+							<p>
+							Econometría se refiere al desarrollo y uso de técnicas estadísticas y probabilísticas para el análisis de datos económicos. A diferencia de la información generada en un experimento de laboratorio puro, donde el entorno y las variables están bajo control, la mayor parte de los datos que debe analizar la econometría proviene del sistema económico en su marcha diaria, y están por fuera del control del analista; son lo que produce el sistema, de manera que es difícil saber qué causa qué (Montenegro, 2018).
+
+
 						</p>
+
+
+<h3><strong>Formas Funcionales de las Regresiones</strong></h3>
+<span class="image fit"><img src="images/ff.png" alt="" style="width: 55vw; min-width: 330px;"/></span>
+
+<h3>Regresión Nivel - nivel</h3>
+
+
+<p>Para esta regresión usaremos datos de la base econmath que contiene datos sobre los resultados en la prueba ACT de estudiantes en estados unidos, junto con algunas características de estos.
+Estamos interesados en determinar si el promedio en high School afecta los resultados en matemáticas de esta prueba, por lo que usaremos las siguientes variables:</p>
+<ul>
+<li>actmth: Variable con información de la calificación de los estudiantes en la prueba de matemáticas . </li>
+<li>hsgpa: Variable con información el promedio en high school del estudiante.</li>
+<li>male: Variable binaria que indica si el estudiante es hombre o mujer .</li>
+<li>colgpa: Variable con información sobre el promedio en el college .</li>
+<li>study: Variable con información de las horas estudiadas cada semana .</li>
+
+</ul>
+
+
+
+
+
+						<div class="col-6 col-12-medium imp-medium">
+
+					</div>
+				</div>
+
+				<div class="container">
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+
+<h3></h3>
+						<pre><code>
+<strong style="color:blue">reg</strong> actmth hsgpa study male colgpa
+
+
+						</code></pre>
 						</div>
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/pic01.png" alt="" /></span>
+							<span class="image fit"><img src="images/reg1.png" alt="" /></span>
 						</div>
 					</div>
 				</div>
+
+				<div class="container">
+					<p>Dado que estamos interesados en la interpretación de hsgpa, y tanto nuestra variable independiente como dependiente están en niveles, la interpretación será la siguiente:</br>
+
+<i><strong>Al aumentar en una unidad el promedio en High School, los resultados de la prueba de matemáticas del ACT aumentaran en promedio y manteniendo todo lo demás constante en 3.99 puntos. Esta es una estimación altamente significativa.</strong></i></br>
+Aquí hay que tener presente que el promedio en High School va de 0 a 4, por lo que un aumento de una unidad es bastante. Además, el puntaje máximo en el ACT matemáticas es de 36. Dado lo anterior tendría sentido aplicar logaritmo a la variable hsgpa para ver el efecto de un aumento porcentual sobre el ACT matemáticas.</p>
+
+<h3></br>Regresión Nivel - Log</h3>
+
+<p>En las regresiones Nivel - Log tendremos nuestra variable dependiente en niveles y nuesta independiente en log. Para este ejemplo usaremos la base de datos econmath del ejemplo anterior, pero esta vez estaremos interesados en determinar como un aumento porcentual en el promedio de High school afecta los resultados de la prueba de matemáticas ACT.</p>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+							<h3></h3>
+							<pre><code>
+<strong style="color:blue">gen</strong> lhsgpa = <strong style="color:blue">log</strong>(hsgpa)
+<strong style="color:blue">reg</strong> actmth lhsgpa study male colgpa
+
+</code></pre>
+
+						</div>
+
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/reg2.png" alt="" /></span>
+						</div>
+					</div>
+					</div>
+
+						<div class="container">
+
+<p>Ahora, dado que esta es una regresión Nivel - Log, la interpretación para nuestra variable de interés "lhsgpa" será la siguiente:</br>
+
+<i><strong>Ante un aumento de un 1% en el promedio de High School, los resultados en el ACT matemáticas aumentaran en promedio y manteniendo todo lo demás constante, en 0.128 puntos.</strong></i></br>
+Como se pudo observar, el coeficiente de lhsgpa se debe dividir por 100 para interpretar correctamente.</p>
+
+<h3></br>Regresión Log - Nivel</h3>
+<p>Para este tipo de regresión importaremos una base de datos que contiene información sobre 526 trabajadores para el año 1976. Supongamos que estamos interesados en determinar el efecto de la educación sobre el salario por hora de los trabajadores. Este salario, lo tendremos en logaritmo, por lo que tendremos una interpretación Log - Nivel</p>
+
+<ul>
+<li>lwage:Variable con información del salario por hora de los trabajadores en logaritmo (Nuestra variable dependiente de interés). </li>
+<li>educ: Variable con información de los años de educacion de los trabajadores.</li>
+<li>exper Variable con información de los años de experiencia del trabajador.</li>
+<li>expersq: Variable "exper" al cuadrado.</li>
+<li>female: Variable binaria que indica si el trabajador es hombre o mujer .</li>
+
+</ul>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+							<h3></h3>
+
+						<pre><code>
+<strong style="color:blue">reg</strong> lwage educ exper expersq female
+
+				</code></pre>
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/reg3.png" alt="" /></span>
+						</div>
+					</div>
+				</div>
+
+		<div class="container">
+			<p>Ahora teniendo en cuenta que wage esta en logaritmos y educ esta en niveles diremos que:</br>
+
+			<i><strong>Al aumentar en un año la educación de las personas, su salario por hora aumentaría en promedio en 8.41%, manteniendo lo demás constante. Esta estimación resulta ser altamente significativa.</strong></i></br>
+			La estimación obtenida para el regresor educ se multiplica por 100.</p>
+
+
+			<h3></br>Regresión Log - Log</h3>
+		<p>Por ultimo, para realizar una regresión Log - Log, tanto nuestra variable dependiente como nuestra variable independiente deben estar en logaritmo.
+
+Para este caso estamos interesados en el efecto de un aumento porcentual en la experiencia sobre el salario por hora. Seguiremos usando la base de datos WAGE1 pero ahora, exper estará en logaritmo.</p>
+
+	<div class="row gtr-150">
+
+		<div class="col-6 col-12-medium">
+			<h3></h3>
+			<pre><code>
+<strong style="color:blue">gen</strong> lexper = <strong style="color:blue">log</strong>(exper)
+<strong style="color:blue">reg</strong> lwage educ lexper female
+
+		</code></pre>
+		</div>
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/reg4.png" alt="" /></span>
+		</div>
+	</div>
+	<p>Teniendo en cuenta que tanto wage como exper esta en logaritmos, tendremos una interpretación log - log, y diremos que:</br>
+
+<i><strong>Un aumento en un 1% en la experiencia de las personas aumenta en promedio y manteniendo lo demás constante, el salario por hora en 0.157 puntos porcentuales, siendo una estimación altamente significativa.</strong></i></p>
+</div>
+
+</div>
+
+
+
+
+
+
+
+<div class="container">
+	<div class="row gtr-150">
+		<h3><strong>Variables Binarias</strong></h3>
+		<p>Las variables binarias, también conocidas como variables Dummy o dicotomas, nos ayudan clasificar cuando se cumple o no una condición. Por ejemplo en la base de datos WAGE1 tenemos una variable llamada "female" que le da valores de 1 a las mujeres y valores de 0 a los hombres. En el caso anterior nos indicaba si existía una diferencia estadística entre los salarios por hora de los hombres y las mujeres.</p>
+
+<p>Para dar un ejemplo de como se realiza la interpretación, usaremos la base de datos econmath para ver si hay una diferencia estadística entre las mujeres y los hombres en los resultados de la prueba de matemáticas del ACT. Traeremos entonces los resultados de la primera regresión pero ahora nos fijaremos en el coeficiente de la variable male.</p>
+
+		<div class="col-6 col-12-medium">
+
+			</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+
+	</div>
+</div>
+
+<div class="container">
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+<h3></h3>
+		<pre><code>
+<strong style="color:blue">reg</strong> actmth hsgpa study male colgpa
+
+		</code></pre>
+
+		</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/dummy.png" alt="" /></span>
+		</div>
+	</div>
+	<p>Este coeficiente se interpreta de la siguiente manera:</br>
+<i><strong>Los hombres obtienen en promedio y manteniendo todo lo demás constante, 1.48 puntos de mas que las mujeres en la prueba de matemáticas del ACT.</i></strong></p>
+
+</div>
+
+
+<div class="container">
+	<h3><strong>Interacciones entre variables Binarias</strong></h3>
+
+<p>Algo que también podemos hacer es realizar interacciones entre variables binarias. Suponiendo que tenemos dos variables binarias, una de genero y otra de color de piel que nos indica cuando una persona es blanca o de color, podríamos interactuar estas variables para diferenciar por ejemplo, el efecto de hombres blancos con hombres de color, mujeres de color y mujeres blancas. Dependiendo de nuestro objetivo, esto podría tener sentido.</br>
+
+Para dar un ejemplo continuaremos con la base de datos econmath, y vamos a interactuar la variable binaria "male" y la variable binaria "econhs" que indica si la persona tuvo un curso de economía en High School. Esto se realiza de la siguiente forma:</p>
+
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+<h3></h3>
+		<pre><code>
+<strong style="color:blue">gen</strong> econmale = male*econhs
+
+		</code></pre>
+
+		</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/d.png" alt="" /></span>
+		</div>
+	</div>
+
+</div>
+
+<div class="container">
+
+<p>Para tener una interpretación mas completa, en nuestra regresión añadiremos la variable "male" individualmente, la variable "econhs" y la interacción "econmale". En este caso, tendremos un grupo base, que serán las mujeres que no vieron un curso de economía en High School. Estas estarán representados con un 0 en la variable "econmale".</p>
+
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+<h3></h3>
+		<pre><code>
+<strong style="color:blue">reg</strong> actmth econmale hsgpa study male econhs colgpa
+
+		</code></pre>
+
+		</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/inter.png" alt="" /></span>
+		</div>
+	</div>
+	<p>
+	La interpretación se complica un poco en estos casos, pero veamoso de la siguiente forma. Nuestra ecuación estimada es la siguiente:</br>
+
+
+$$ actmth = \beta_{0} + \beta_{1}male + \beta_{2}econ + \beta_{3}econmale + ...$$
+
+
+Si queremos encontrar el efecto de cualquier grupo respecto de las mujeres que no vieron un curso de economía (grupo base), lo haremos de la siguiente forma:</br>
+
+<ul>
+<li> Hombres y curso de economía: $\beta_{1} + \beta_{2} + \beta_{3}$ </li>
+
+<li> Hombres sin curso de economía: $\beta_{1}$ </li>
+
+<li> Mujeres y curso de economía: $ \beta_{2}$ </li>
+
+</ul>
+
+
+Siguiendo la idea anterior, podemos decir que:</br>
+
+<i><strong>Los hombres que si vieron un curso de economía en High School obtienen en promedio y con todo lo demás constante, (1.59  - 0.51 - 0.26) puntos de mas que las mujeres que no vieron un curso de economía.</i></strong></br>
+
+ Nota: Por ahora ignoremos la significancia estadística
+</p>
+
+</div>
+
+
+<div class="container">
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+			<pre><code>
+
+ASDF
+</code></pre>
+
+		</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/inter.png" alt="" /></span>
+		</div>
+	</div>
+	</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
 			</section>
 
 		<!-- Two -->
 
 
 		<!-- Three -->
-			<section id="three" class="main style1 special">
-				<div class="container">
-					<header class="major">
-						<h2>Monitorias</h2>
-					</header>
-					<div class="row gtr-150">
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic05.jpg" alt="" /></span>
-							<h3>Econometría Basica</h3>
-							<p> Formas funcionales, pruebas de significancia, variables binarias. Acá encontrarán un resumen corto del curso de Econometría Basica.</p>
-							<ul class="actions special">
-								<li><a href="EconometriaBasica.html" class="button">Más</a></li>
-							</ul>
-						</div>
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic02.jpg" alt="" /></span>
-							<h3>Simulaciones de Montecarlo</h3>
-							<p>El método de Monte Carlo, consiste en realizar y tabular muchísimas repeticiones de un experimento construyendo nuestras variables en cada repetición tomando un generador de números aleatorios.</p>
-							<ul class="actions special">
-								<li><a href="Montecarlo.html" class="button">Más</a></li>
-							</ul>
-						</div>
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic03.jpg" alt="" /></span>
-							<h3>Teorema de Frisch Waugh Lovell</h3>
-							<p>Según el teorema de FWL, los coeficientes β pueden estimarse corriendo los residuos de una regresión de
-								Y contra todas las variables de X<sub>2</sub> , contra los residuos de una regresión de cada variable X<sub>1</sub> contra todas las variables de X<sub>2</sub></p>
-							<ul class="actions special">
-								<li><a href="TeoremaFWL.html" class="button">Más</a></li>
-							</ul>
-						</div>
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic04.jpg" alt="" /></span>
-							<h3>Homocedasticidad</h3>
-							<p>Para que el supuesto de perturbaciones esfericas se cumpla necesitamos que que todos
-								los términos de error tengan la misma varianza. A esto se le conoce como Homocedasticidad.
-						</p>
-							<ul class="actions special">
-								<li><a href="#" class="button">Más</a></li>
-							</ul>
-						</div>
-					</br>
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/pic05.jpg" alt="" /></span>
-						<h3>Vacio</h3>
-						<p> Vacio</p>
-						<ul class="actions special">
-							<li><a href="#" class="button">Más</a></li>
-						</ul>
-					</div>
-					</div>
-				</div>
-			</section>
 
 		<!-- Four -->
-		<!--
-
 			<section id="four" class="main style2 special">
 				<div class="container">
 					<header class="major">
-						<h2>Sobre mi</h2>
+						<h2>Bases y do files</h2>
 					</header>
-					<p>Mi nombre es Juan Esteban Rincón, estudiante de economía de la pontificia Universidad Javeriana.</p>
+
 					<ul class="actions special">
-						<li><a href="#" class="button wide primary">Sign Up</a></li>
+						<li><a href="Montecarlo.zip" class="button wide primary">Descargar</a></li>
+						<li><a href="index.html" class="button wide">Pagina principal</a></li>
 					</ul>
 				</div>
+
+
+
+
+
+
+
 			</section>
--->
+
 		<!-- Five -->
 		<!--
 			<section id="five" class="main style1">
