@@ -14,12 +14,19 @@
 			<section id="header">
 				<div class="inner">
 					<span class="icon solid major fa-book-reader"></span>
-					<h1>Teorema <br /><strong>Frish Waugh Lovell</strong>
+					<h1>Teorema <br /><strong>Frisch Waugh Lovell</strong>
 					</h1>
 					<p>Pontificia Universidad Javeriana</p>
 
 				</div>
 			</section>
+			<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+			<script>
+			MathJax = {
+				tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+			};
+			</script>
+			<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 
 		<!-- One -->
 			<section id="one" class="main style1">
@@ -31,14 +38,14 @@
 								Frisch Waugh Lovell</h2>
 							</header>
 							</div>
-							<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
 
-							<p>Considere el modelo  $$ {Y = X_{1}\beta_{1} + X_{2}\beta_{2} +\epsilon }$$ donde X<sub>1</sub> y X<sub>2</sub> pueden ser matrices o vectores. Según el teorema de Frisch Waugh, el vector de coeficientes β<sub>1</sub> puede estimarse corriendo los residuos de una regresión de
-Y contra todas las variables de X<sub>2</sub> , contra los residuos de una regresión de cada variable X<sub>1</sub> contra todas las variables de X<sub>2</sub> . Este procedimiento arroja
-&beta;&#770; gorro y ε&#770; gorro correctos. También se puede correr Y directamente contra los residuos de una regresión de cada variable X<sub>1</sub> contra todas las variables de X<sub>2</sub> ; en este caso, la estimación para β<sub>1</sub> será correcta pero no los residuos ε gorro. Igual para β<sub>2</sub><sup>1</sup>.
+							<p>Considere el modelo  $ Y = X_{1}\beta_{1} + X_{2}\beta_{2} +\epsilon  $ donde  $ X_{1} $ y $ X_{2} $ pueden ser matrices o vectores. Según el teorema de Frisch Waugh, el vector de coeficientes $ \beta_{1} $ puede estimarse corriendo los residuos de una regresión de
+Y contra todas las variables de $ X_{2} $ , contra los residuos de una regresión de cada variable $ X_{1} $ contra todas las variables de $ X_{2} $ . Este procedimiento arroja
+$ \hat{\beta} $ y $ \hat{\epsilon} $  correctos. También se puede correr $ Y $ directamente contra los residuos de una regresión de cada variable $ X_{1} $ contra todas las variables de $ X_{2} $ ; en este caso, la estimación para $ \beta_{1} $ será correcta pero no los residuos ε gorro. Igual para $ \beta_{2} $<sup>1</sup>.
 
 
 						</p>
+						<p>Veamoslo en Stata:</p>
 
 
 						<div class="col-6 col-12-medium imp-medium">
@@ -47,18 +54,17 @@ Y contra todas las variables de X<sub>2</sub> , contra los residuos de una regre
 				</div>
 
 				<div class="container">
+					<p>Primero debemos crear nuestras variable asegurandonos que exista una correlacion entre $ X_{1} $ y $ X_{2} $.</p>
+
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
-
 						<pre><code>
 
-<strong style="color:blue">use </strong> BaseLimpia.dta
-
-<strong style="color:blue">global </strong>varlist mage meduc npvis fage feduc male mblck
-
-<strong style="color:blue">drop if </strong>mage>=. | meduc >=. | npvis>=. | fage>=. | feduc>=. | male>=. | mblck>=.
-
-<strong style="color:blue">gen </strong> constante=1
+<strong style="color:blue">clear</strong>
+<strong style="color:blue">set</strong> seed 21008
+<strong style="color:blue">set</strong> obs 1000
+<strong style="color:blue">gen</strong> x1 = rnormal()
+<strong style="color:blue">gen</strong> x2 = rnormal() + 0.2*x1
 
 						</code></pre>
 
@@ -70,18 +76,13 @@ Y contra todas las variables de X<sub>2</sub> , contra los residuos de una regre
 				</div>
 
 				<div class="container">
+					<p>Proceso generador de datos para y.</p>
+
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 
-						<pre><code><strong style="color:blue">mata:</strong>
+						<pre><code><strong style="color:blue">gen</strong> y = 4 + x1 + 5*x2 + rnormal()
 
-X=st_data(.,("constante","mage", "meduc", "npvis", "fage", "feduc","male","mblck"))
-
-Y=st_data(.,("lbwght"))
-
-Betagorro=invsym(X'*X)*X'*Y
-
-Betagorro
 
 </code></pre>
 
@@ -89,21 +90,23 @@ Betagorro
 
 
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/FWL2.jpg" alt="" /></span>
+
 						</div>
 					</div>
+					<p>Ahora hay que realizar la regresion de $ y $ en $ x_{2} $ y de $ x_{1} $ en $ x_{2} $ para luego obtener los residuos.</p>
 
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
+<div></div>
+<h1></h1>
 
-						<pre><code><strong style="color:blue">mata:</strong>
-X=st_data(.,("constante","mage", "meduc", "npvis", "fage", "feduc","male","mblck"))
 
-Y=st_data(.,("lbwght"))
+						<pre><code>
+<strong style="color:blue">reg</strong> x1 x2
+<strong style="color:blue">predict</strong> resid_x1, res
 
-Betagorro=invsym(X'*X)*X'*Y
-
-Betagorro
+<strong style="color:blue">reg</strong> y x2
+<strong style="color:blue">predict</strong> resid_y, res
 
 				</code></pre>
 
@@ -111,9 +114,41 @@ Betagorro
 
 
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/FWL2.jpg" alt="" /></span>
+							<span class="image fit"><img src="images/FWL2.png" alt="" /></span>
 						</div>
 					</div>
+
+
+					<p>Por ultimo realizaremos la regresion de los residuos obtenidos anteriormente y la regresion usual por MCO para comprobar si nuestro estimador $ \beta_{1} $ es igual.</p>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+
+<div></div>
+<h1></h1>						<pre><code>
+
+<strong style="color:blue">reg</strong> resid_y resid_x1
+
+outreg2 using myreg.doc, replace ctitle(Modelo FWL)
+
+<strong style="color:blue">reg</strong> y x1 x2
+
+outreg2 using myreg.doc, append ctitle(Modelo Correcto)
+					</code></pre>
+
+						</div>
+
+
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/FWL3.png" alt="" /></span>
+						</div>
+					</div>
+
+<p>En conclusion gracias al teorema FWL el coeficiente que obtenemos para un modelo de regresion múltiple es igual al coeficiente del modelo de regresión simple si se "elimina" la influencia de los otros regresores.
+</p>
+
+
+
 				</div>
 
 			</section>
