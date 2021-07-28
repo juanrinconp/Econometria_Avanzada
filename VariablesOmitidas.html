@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>Normalidad Asintótica</title>
+		<title>Variables Omitidas</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -14,7 +14,7 @@
 			<section id="header">
 				<div class="inner">
 					<span class="icon solid major fa-book-reader"></span>
-					<h1>Normalidad <br /><strong> Asintótica</strong>
+					<h1>Variables <br /><strong> Omitidas</strong>
 					</h1>
 					<p>Pontificia Universidad Javeriana</p>
 
@@ -34,149 +34,99 @@
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 							<header class="major">
-								<h2>Normalidad Asintótica</h2>
+								<h2>Variables Omitidas</h2>
 							</header>
 							</div>
 
-							<p>Cuando se viola el supuesto de que los errores se distribuyen normal con media 0 y varianza $\sigma^{2}I_{N}$ empezamos a tener
-								 problemas de inferencia estadística. ¿Por qué? Porque si no se cumple el supuesto de normalidad ya no sabemos si $\hat{\beta}$ se distribuye o no normal,
-								 y por ende no podemos  calcular los  estadísticos F o t.</br>
+							<p>
+El tercer supuesto de Gauss Markov, también conocido como el supuesto de exogeneidad estricta hace referencia a que los errores no pueden estar correlacionados con ninguno de nuestros regresores, es decir:
 
-								 Lo bueno es que hay una solución, ya que este supuesto no es necesario cuando tenemos un tamaño de muestra "n" grande.
-								 En esta sección vamos a demostrar usando Stata, que con un n grande, tendremos que:
+ $$ E[\epsilon|X] = 0 $$
 
-								  $$\sqrt{n}(\beta - \hat{\beta}) \underbrace{\longrightarrow}_{Distribucion}  N(0, AVar(\hat{\beta}))$$
+ En esta parte veremos cuando se viola este supuesto gracias a un problema de variables omitidas.  Los otros casos cuando se viola este supuesto es cuando tenemos errores de medición, y simultaneidad. </br>
 
+								Supongamos que el modelo correcto es el siguiente:
 
-									Es decir, $\sqrt{n}(\beta - \hat{\beta})$ \textbf{converge en distribución} a $N(0, AVar(\hat{\beta}))$\\
 
+								    $$ y = X_{r}\beta_{r} + X_{s}\beta_{s} + \mu $$
 
-									Para demostrar esto, partimos de nuestro estimador $\hat{\beta}$ y llegamos a la forma $\sqrt{n}(\hat{\beta} - \beta )$, luego veremos a que convergen los términos restantes (Spoiler: Llegaremos a una función de la forma $A_{n}Z_{n}$, donde $A_{n}$ es una variable aleatoria que converge en probabilidad a una constante A, y $Z_{n}$ es una variable aleatoria que converge en distribución a una normal) y para terminar, usaremos el teorema de Slutsky  para ver a que converge la función restante (la cual tendrá una forma tipo $A_{n}Z_{n}$).\\
 
-									Entonces, partiendo de nuestros estimadores escritos en forma matricial:
+								Pero por alguna razón nosotros estimamos:
 
 
-									    $$ \hat{\beta} = (X'X)^{-1}X'Y $$
+								    $$ y = X_{r}\beta_{r} + \epsilon $$
 
 
+								Intuitivamente sabemos que esto nos va a generar un sesgo en nuestro estimador (sesgo por variable omitida). Veamos porque:
 
-									     $$ \hat{\beta} = \beta+ (X'X)^{-1}X'\epsilon $$
 
+								    $$ \hat{\beta_{r}} = (X_{r}'X_{r})^{-1}X_{r}'y $$
 
 
-									    $$ \hat{\beta} - \beta = (X'X)^{-1}X'\epsilon (\frac{n}{n}) $$
+								Al remplazar por $y$ del modelo correcto y algo de matemáticas
 
 
+								    $$ \hat{\beta_{r}} = (X_{r}'X_{r})^{-1}X_{r}'(X_{r}\beta_{r} + X_{s}\beta_{s} + \mu) $$
 
-									    $$ \hat{\beta} - \beta = (X'X)^{-1}X'\epsilon (\frac{n}{\sqrt{n}\sqrt{n}}) $$
 
 
 
+								    $$ \hat{\beta_{r}} = (X_{r}'X_{r})^{-1}X_{r}'X_{r}\beta_{r} + (X_{r}'X_{r})^{-1}X_{r}'X_{s}\beta_{s} + (X_{r}'X_{r})^{-1}X_{r}'\mu $$
 
-									$$ \sqrt{n}(\hat{\beta} - \beta) = (X'X)^{-1}X'\epsilon (\frac{n}{\sqrt{n}}) $$
 
 
+								      $$ \hat{\beta_{r}} = \beta_{r} + (X_{r}'X_{r})^{-1}X_{r}'X_{s}\beta_{s} + (X_{r}'X_{r})^{-1}X_{r}'\mu  $$
 
 
+								Sacando valor esperado
 
-									    $$ \sqrt{n}(\hat{\beta} - \beta) = (\frac{X'X}{n})^{-1} (\frac{X'\epsilon}{\sqrt{n}}) $$
 
+								    $$ E[\hat{\beta_{r}}] = \beta_{r} + E[(X_{r}'X_{r})^{-1}X_{r}'X_{s}\beta_{s}] + E\cancelto{0}{[(X_{r}'X_{r})^{-1}X_{r}'\mu]} $$
 
-									Sabemos que $(\frac{X'X}{n})^{-1}$ converge en probabilidad a $E[X'X]^{-1}$, pero no sabemos nada sobre $(\frac{X'\epsilon}{\sqrt{n}})$, asi que vamos a ver:
 
 
-									    $$ (\frac{X'\epsilon}{\sqrt{n}}) $$
+								    $$ E[\hat{\beta_{r}}] = \beta_{r} + \underbrace{E[(X_{r}'X_{r})^{-1}X_{r}'X_{s}\beta_{s}]}_{Sesgo} $$
 
 
+								Como vemos, al omitir una variable importante, se nos esta generando un sesgo. La pregunta ahora es ¿Cual es la dirección de este sesgo?. Esto depende de dos cosas, primero del signo de $\beta_{s}$ y segundo del signo de la $cov(X_{r}, X_{s})$.
+</p>
+							<div>
+								<span class="image fit"><img src="images/sesgovo.png" alt="" style="width: 45vw; min-width: 330px;" /></span>
+							</div>
 
-									    $$ \underbrace{X'}_{X}\underbrace{(\frac{\epsilon}{\sqrt{n}})}_{N(0,1)} $$
+<p>
+								Para aterrizar un poco mas este concepto, imaginemos que estamos tratando de estimar el salario de las personas. Omitimos habilidad ya que no contamos con una forma de medirla, y estimamos el parámetro para años de educación $\beta_{educ}$. Para saber cual sera el sesgo debemos pensar en dos cosas. Primero, es posible que $\beta_{habilidad} > 0$, es decir, que la habilidad afecte positivamente al salario, y segundo también tiene sentido pensar que existe una relación positiva entre años de educación y habilidad (se podría argumentar que entre mas hábil soy, soy mas propenso a estudiar ya que se me facilita mas), por lo que $cov(Educacion,Habilidad) > 0$. Si vemos en la tabla, veremos entonces que nuestro estimador para $\beta_{educ}$ tendra un sesgo positivo. \\
 
 
-									Por una parte gracias al teorema del limite central, esto converge a una normal, pero no sabemos cuales serán sus momentos muéstrales. Para saberlo, tomamos valor esperado:
+								Otra pregunta interesante es si este sesgo se soluciona cuando n tiende a infinito. Para ver esto, tomaremos nuestro estimador sesgado $\beta_{r}$ (antes de sacarle valor esperado) y le aplicaremos $plim$.
 
 
+								       $$  plim[\hat{\beta_{r}}] = plim[\beta_{r} + (X_{r}'X_{r})^{-1}X_{r}'X_{s}\beta_{s} + (X_{r}'X_{r})^{-1}X_{r}'\mu (\frac{n}{n})] $$
 
-									   $$ E[{(\frac{X'\epsilon}{\sqrt{n}})}] = 0 $$
 
 
-									Y tomamos la varianza:
+								    $$ plim[\hat{\beta_{r}}] = plim[\hat{\beta_{r}} (\frac{n}{n})] + plim[(\frac{X_{r}'X_{r}}{n})^{-1} (\frac{X_{r}'X_{s}}{n}) \beta_{s}] + plim[(\frac{X_{r}'X_{r}}{n})^{-1} (\frac{X_{r}'\mu}{n})] $$
 
 
-									       $$ Var[{(\frac{X'\epsilon}{\sqrt{n}})}] = \frac{1}{n}X'Var(\epsilon)X $$
 
+								    $$ plim[\hat{\beta_{r}}] = \beta_{r} + \underbrace{E[X'X]^{-1}E[X_{r}'x_{s}]\beta_{s}}_{Inconsistente} $$
 
-									       $$ Var[{(\frac{X'\epsilon}{\sqrt{n}})}] = \frac{1}{n}X'{\sigma_{\epsilon}}^{2}X $$
 
+								Asi que como acabamos de ver cuando omitimos una variable importante en nuestra regresion, vamos a tener estimadores sesgados e inconsistentes. Un dato a tener en cuenta es que estos estimadores sesgados tendrán una varianza menor a los estimadores correctos simplemente por el hecho de tener menos variables.
 
-									       $$ Var[{(\frac{X'\epsilon}{\sqrt{n}})}] = {\sigma_{\epsilon}}^{2}\underbrace{(\frac{X'X}{n})}_{E[X'X]} $$
 
+								    $$ Var[\widetilde{\beta_{r}}] = {\sigma_{\epsilon}^{2}} (X_{r}'X_{r})^{-1}  $$
 
 
-									       $$ Var[{(\frac{X'\epsilon}{\sqrt{n}})}] = {\sigma_{\epsilon}}^{2}E[X'X] $$
 
 
-									Dado lo anterior ahora sabemos que  $(\frac{X'\epsilon}{\sqrt{n}}) \sim N(0,{\sigma_{\epsilon}}^{2}E[X'X])$\\
 
-									Y volviendo a nuestra ecuación inicial
+								 $$ Var[\hat{\beta_{r}}] = {\sigma_{\epsilon}^{2}} \frac{(X_{r}'X_{r})^{-1}}{1 - {R^{2}_{Xr,Xs}}}  $$
 
-									      $$ \sqrt{n}(\hat{\beta} - \beta) = \underbrace{(\frac{X'X}{n})^{-1}}_{E[X'X]^{-1}} \underbrace{(\frac{X'\epsilon}{\sqrt{n}})}_{N(0,{\sigma_{\epsilon}}^{2}E[X'X])} $$
 
 
-									Y aqui es donde entra Slustky, ya que este teorema nos dice que
+								     $$ Var[\widetilde{\beta_{r}}] < Var[\hat{\beta_{r}}] $$
 
-
-									    Si $Z_{n} \underbrace{\longrightarrow}_{Distribucion}  N(0,I)$ y $A_{n} \underbrace{\longrightarrow}_{probabilidad} A$
-
-
-									Entonces
-
-
-									    $$ Z_{n}A_{n} \underbrace{\longrightarrow}_{Distribucion} N(0, A\sum A') $$
-
-
-									En nuestro caso, $A = E[X'X]^{-1}$ Y $Z_{n} =  (\frac{X'\epsilon}{\sqrt{n}}) \sim N(0,{\sigma_{\epsilon}}^{2}E[X'X])$ por lo que ya sabemos como terminar la demostración:</br></br>
-
-
-
-								 El valor esperado:</br>
-
-
-
-									$$ E[Az_{n}] = AE[Z] = 0 $$
-
-
-									La varianza:
-
-
-
-									$$ Var[{AZ_{n}}] = AVar(Z)A' $$
-
-
-
-									$$ Var[{AZ_{n}}] = E[X'X]^{-1}Var(Z)E[X'X]^{-1'} $$
-
-
-									Pero recordemos que $Z_{n} =  (\frac{X'\epsilon}{\sqrt{n}}) \sim N(0,{\sigma_{\epsilon}}^{2}E[X'X])$, por lo que conocemos cual es la varianza de $Z$
-
-
-									$$ Var[{AZ_{n}}] = E[X'X]^{-1}{\sigma_{\epsilon}}^{2}E[X'X]E[X'X]^{-1'} $$
-
-
-
-									$$ Var[{AZ_{n}}] = {\sigma_{\epsilon}}^{2}E[X'X]\underbrace{E[X'X]^{-1}E[X'X]^{-1'}}_{I} $$
-
-
-
-									   $$ Var[{AZ_{n}}] = {\sigma_{\epsilon}}^{2}E[X'X] = {\sigma_{\epsilon}}^{2} {\frac{(X'X)}{n}}^{-1} $$
-
-
-										 Finalmente, conocemos la distribución y los momentos muéstrales de $\sqrt{n}(\beta - \hat{\beta})$
-
-
-										     $$ \sqrt{n}(\beta - \hat{\beta})  D\longrightarrow N(0, {\sigma_{\epsilon}}^{2} {\frac{(X'X)}{n}}^{-1}) $$
-
-
-										 Resumiendo, partimos del estimador de $\hat{\beta}$ para demostrar que cuando tenemos un n muy grande, sin importar como se distribuye el error, nuestro estimador $\hat{\beta}$ seguirá siendo útil para calcular nuestros estadísticos t y F\footnote{De hecho, siguiendo el mismo procedimiento se puede demostrar que $\hat{\beta}$ se distribuye normal con media $\beta$ y varianza ${\sigma_{\epsilon}}^{2}(X'X)^{-1}$. Sin el supuesto de normalidad, no conocíamos la distribución de $\hat{\beta}$, y por ende, no podíamos construir la t. Al demostrar que   $\sqrt{n}(\beta - \hat{\beta}) D{\longrightarrow}  N(0, AVar(\hat{\beta}))$ podemos construir la t y la F sin ningún problema.
 
 
 
@@ -190,95 +140,36 @@
 
 
 				<div class="container">
+					<p>pendiente</p>
 
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 						<pre><code>
-<strong style="color:blue">clear</strong>
-<strong style="color:blue">capture program drop</strong>  MCO
-<strong style="color:blue">program</strong> define MCO, rclass
-<strong style="color:blue">args</strong> N
-<strong style="color:blue">clear</strong>
-<strong style="color:blue">set</strong> obs `N'
-<strong style="color:blue">capture</strong> drop y x
-<strong style="color:blue">gen</strong> x=runiform(0,8)
-<strong style="color:blue">gen</strong> y = 0.5*x+runiform(0,5)
-<strong style="color:blue">qui reg</strong> y x
-<strong style="color:blue">return scalar</strong> beta = _b[x]
-<strong>end</strong>
+
+
 						</code></pre>
 
 						</div>
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/f.png" alt="" /></span>
+							<span class="image fit"><img src="images/F.jpg" alt="" /></span>
 						</div>
+					</div>
+					<div class="container">
+
+					<h3>Bibliografía:</h3>
+					<ul>
+					<li> Verbeek, M. (2004), A Guide to Modern Econometrics.</li>
+					<li> Wooldridge, Jeffrey M. (2018), Introductory Econometrics: A Modern Approach, Sixth Edition, Cengage Learning.</li>
+					<li> Montenegro, A. (2018), Econometría Intermedia y Básica.</li>
+
+					</ul>
 					</div>
 				</div>
 
-				<div class="container">
 
-					<div class="row gtr-150">
-						<div class="col-6 col-12-medium">
-						<pre><code>
-<strong style="color:blue">simulate</strong> Beta1000=r(beta), reps(1000) nodots: MCO 1000
-<strong style="color:blue">save</strong> Beta1000.dta
-<strong style="color:blue">simulate</strong>  Beta10000=r(beta), reps(1000) nodots: MCO 10000
-<strong style="color:blue">merge 1:1 </strong>  _n using beta1000
-<strong style="color:blue">kdensity</strong> Beta1000, n(500) generate(x_1000 f_1000) kernel(gaussian) nograph
-<strong style="color:blue">label</strong> variable f_1000 "N=1000"
-<strong style="color:blue">kdensity</strong>  Beta10000, n(500) generate(x_10000 f_10000) kernel(gaussian) nograph
-<strong style="color:blue">label</strong> variable f_10000 "N=10000"
-<strong style="color:blue">graph twoway</strong> (line f_1000 x_1000) (line f_10000 x_10000)
-						</code></pre>
-
-						</div>
-						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/normalidad1.png" alt="" /></span>
-						</div>
-					</div>
-					<p>Como podemos ver nuestro estimador es consistente y a medida que aumenta la muestra, tiende mas a acercarse al valor poblacional pero, como se había mencionado anteriormente
-					esta el problema de que su distribución cambia a medida que cambia la muestra. La distribución del estimador con n = 10000 esta mucho mas concentrada.</p>
-				</div>
-
-
-				<div class="container">
-<p>Dado lo anterior optaremos por utilizar una version de  los estimadores recentrados y escalados.</p>
-					<div class="row gtr-150">
-						<div class="col-6 col-12-medium">
-						<pre><code>
-<strong style="color:blue">replace</strong>  Beta1000=sqrt(1000)*(Beta1000-0.5)
-<strong style="color:blue">replace</strong>  Beta10000=sqrt(10000)*(Beta10000-0.5)
-<strong style="color:blue">drop</strong> x_1000 f_1000 x_10000 f_10000
-<strong style="color:blue">kdensity</strong> Beta1000, n(500) generate(x_1000 f_1000) kernel(gaussian) nograph
-<strong style="color:blue">label</strong> variable f_1000 "N=1000"
-<strong style="color:blue">kdensity</strong> Beta10000, n(500) generate(x_10000 f_10000) kernel(gaussian) nograph
-<strong style="color:blue">label</strong> variable f_10000 "N=10000"
-<strong style="color:blue">graph twoway</strong> (line f_1000 x_1000) (line f_10000 x_10000) (function normalden(x, sqrt(0.5)),range(-2 2)) , legend(label(3 "Distribución Normal"  cols(3))
-						</code></pre>
-
-						</div>
-						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/normalidad2.png" alt="" /></span>
-						</div>
-					</div>
-
-					<p>En esta ultima grafica vemos como los estimadores recentrados y escalados tienen una distribución prácticamente igual a la de una normal independiente del N. Ahora si podemos usar
-					nuestros estadísticos f y t y hacer inferencia sin problema.</p>
-				</div>
 
 				</div>
 
-				<div class="container">
-
-				<h3>Bibliografía:</h3>
-				<ul>
-				<li> Verbeek, M. (2004), A Guide to Modern Econometrics.</li>
-				<li> Drukker, D. (2017), Consistencia y Normalidad Asintótica: Una Explicación con Simulaciones.</li>
-				<li> Wooldridge, Jeffrey M. (2018), Introductory Econometrics: A Modern Approach, Sixth Edition, Cengage Learning.</li>
-				<li> Montenegro, A. (2018), Econometría Intermedia y Básica.</li>
-
-				</ul>
-				</div>
 			</section>
 
 		<!-- Two -->
