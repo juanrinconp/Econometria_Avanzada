@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>Econometría Avanzada</title>
+		<title>Simulaciones de Montecarlo</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -14,12 +14,10 @@
 			<section id="header">
 				<div class="inner">
 					<span class="icon solid major fa-book-reader"></span>
-					<h1>Monitoria <strong>Econometría Avanzada</strong><br />
+					<h1>Simulaciones de<br /><strong>Montecarlo</strong>
 					</h1>
-					<p>Pontificia Universidad Javeriana</br>Juan Esteban Rincón Poveda</p>
-					<ul class="actions special">
-						<li><a href="#one" class="button scrolly">Inicio</a></li>
-					</ul>
+					<p>Pontificia Universidad Javeriana</p>
+
 				</div>
 			</section>
 
@@ -29,111 +27,338 @@
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 							<header class="major">
-								<h2>Monitoria<br />
-								Econometría Avanzada</h2>
+								<h2><strong>Simulaciones<br />
+								de Montecarlo</strong></h2>
 							</header>
-							<p>Acá encontrarán algunos ejercicios y explicaciónes realizadas usando el software  Stata  para la  clase de econometría avanzada. Específicamente encontraran demostraciones, simulaciones y explicaciónes de métodos
-							como lo son variables instrumentales, logit, probit, entre otros que buscan apoyar el aprendizaje del curso.
+							</div>
+							<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+						  <script>
+						  MathJax = {
+						    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+						  };
+						  </script>
+						  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+							<p>
+								El método de Monte Carlo, consiste en realizar y tabular muchísimas repeticiones de un experimento construyendo nuestras variables en cada repetición
+								tomando un generador de números aleatorios<sup>1</sup>.Con esta herramienta demostrarémos insesgamiento y consistencia.
+
+
 						</p>
+
+<h3><strong>Insesgamiento</strong></h3>
+<p>Decimos que nuestros estimadores son insesguados cuando en un muestreo repetido nuestro estimador es en promedio igual al valor real del parametro poblacional<sup>2</sup>. Matematicament diremos que $E {\hat{\beta}} = \beta $.
+En  otras palabras "en promedio, un estimador insesgado da en el blanco."<sup>1</sup></p>
+<p>Matematicamente:</p>
+<div style="width:1150px">
+	<p>
+$$ \hat{\beta} = (X'X)^{-1}X'y $$
+$$ \hat{\beta} = (X'X)^{-1}X'(X\beta + \epsilon) $$
+$$ \hat{\beta} = (X'X)^{-1}X'X\beta  + (X'X)^{-1}X'\epsilon $$
+$$ \hat{\beta} = \beta + (X'X)^{-1}X'\epsilon\ $$
+
+</p>
+
+
+</div>
+<p>Tomando valor esperado</p>
+<div style="width:1150px">
+	<p>
+$$ E\hat{\beta} = \beta + E[(X'X)^{-1}X'\epsilon]  $$
+</p>
+</div>
+
+<p>Viendo lo anterior vemos que para que nuestro estimador sea insesgado necesitaremos que  el termino $ E[(X'X)^{-1}X'\epsilon] $ sea igual a 0.
+Esto ocurre cuando se cumple el supuesto de Gauss Marvok de <strong>exogeneidad estricta</strong>, es decir, necesitamos que el  valor  esperado del  vector $ \epsilon  $
+condicionado la  matriz X  sea 0.</p>
+
+<p>Veamos como se vería esto en Stata:</p>
+						<div class="col-6 col-12-medium imp-medium">
+
+					</div>
+				</div>
+
+				<div class="container">
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+
+						<pre><code>
+<strong style="color:blue">clear</strong>
+<strong style="color:blue">set</strong> obs 1000
+<strong style="color:blue">gen</strong> B1_store=.
+
+<strong style="color:blue">set</strong> obs 10000
+<strong style="color:blue">gen</strong> poblacionx=runiform(0,5)
+<strong style="color:blue">gen</strong> epsilon=rnormal(0,1)
+<strong style="color:blue">gen</strong> poblaciony=0.8*poblacionx+epsilon
+
+						</code></pre>
+
 						</div>
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/pic01.png" alt="" /></span>
+							<span class="image fit"><img src="images/inses1.jpg" alt="" /></span>
 						</div>
 					</div>
 				</div>
+
+				<div class="container">
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+							<pre><code>
+<strong style="color:blue">qui forvalues</strong> i =1/1000{
+<strong style="color:blue">gen</strong> random= runiform()
+<strong style="color:blue">sort</strong> random
+<strong style="color:blue">mata:</strong> ym = <strong style="color:blue">st_data</strong>((1,1000), "poblaciony")
+<strong style="color:blue">mata:</strong> xm = <strong style="color:blue">st_data</strong>((1,1000), "poblacionx")
+<strong style="color:blue">mata</strong> betaest = <strong style="color:blue">invsym</strong>(xm'xm)*xm'ym
+<strong style="color:blue">mata:</strong> betaest
+<strong style="color:blue">mata:</strong> <strong style="color:blue">st_numscalar</strong>("beta_1" , betaest)
+<strong style="color:blue">local</strong> coef1= beta_1
+<strong style="color:blue">replace</strong> B1_store= `coef1'  in `i'
+<strong style="color:blue">drop</strong> random
+}
+
+</code></pre>
+
+						</div>
+
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/inses2.jpg" alt="" /></span>
+						</div>
+					</div>
+					</div>
+
+						<div class="container">
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+<strong style="color:blue">summ</strong> 	B1_store
+				</code></pre>
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/inses3.jpg" alt="" /></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="container">
+			<div class="row gtr-150">
+				<p>Como podemos ver despues de realizar 1000 simulaciones obtenemos que la media de todas estas estimaciones es 0.803, un valor
+				bastante cercano al valor poblacional (0.8). Este valor se acercara cada vez mas al poblacional a medida que aumentamos la muestra.
+				</p>
+				<div class="col-6 col-12-medium">
+
+				<pre><code>
+
+<strong style="color:blue">histogram</strong> B1_store, percent fcolor(none) lcolor(ebblue*.7) ytitle(Densidad) xtitle(Betas) xline(0.8, lwidth(thick) lpattern(dash) lcolor(orange*1)) title(Distribución Muestral 1000 Repeticiones)
+
+		</code></pre>
+				</div>
+				<div class="col-6 col-12-medium imp-medium">
+					<span class="image fit"><img src="images/inses4.jpg" alt="" /></span>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+
+	<div class="row gtr-150">
+		<p>En el histograma es mas claro que el valor esperado del estimador de beta de MCO es igual a su valor poblacional (insesgamiento).
+			Como ya se menciono, para que esto ocurra necesitamos que el valor esperado del error condicionado X sea 0, es decir, necesitamos el supuesto de <strong> exogeneidad estricta</strong>.
+			Esto lo impusimos en stata al crear  un $ \epsilon $ no correlacionado con $ X $.
+		</p>
+		<div class="col-6 col-12-medium">
+
+		</div>
+		<div class="col-6 col-12-medium imp-medium">
+		</div>
+	</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+<div class="container">
+	<div class="row gtr-150">
+		<h3><strong>Consistencia</strong></h3>
+		<p>Se dice que un estimador $ \hat{\beta}$ es consistente si se cumple que $ plim(\hat{\beta}) = \beta $, donde $ \beta $ es el verdadero parámetro de la población. Hay que  tener en cuenta  que la mera existencia de  $ plim(\hat{\beta}) $ no garantiza consistencia porque para ello dicho  $ plim(\hat{\beta}) $ debe ser
+igual al verdadero parámetro poblacional. En otras palabras consistencia implica que conseguir más datos (ampliar la muestra) ayuda al estimador a acercarse en probabilidad al verdadero parámetro.<sup>3</sup></p>
+
+<p>Podemos empezar mostrando que bajo los supuestos de Gauss-Markov, se cuple que $ plim(\hat{\beta}) = \beta $, es decir, que el estimador es consistente.</p>
+
+<div style="width:1150px">
+	<p>
+
+$$\hat{\beta} = (X'X)^{-1}X'Y$$
+
+
+$$\hat{\beta} = (X'X)^{-1}X'Y (\frac{n}{n})$$
+
+
+$$\hat{\beta} = (\frac{X'X}{n})^{-1} (\frac{X'Y}{n})$$
+
+$$\hat{\beta} = (\frac{X'X}{n})^{-1} (\frac{X'(X\beta + \epsilon)}{n})$$
+
+$$\hat{\beta} = \underbrace{(\frac{X'X}{n})^{-1} (\frac{X'X}{n})}_I\beta +(\frac{X'X}{n})^{-1}(\frac{X'\epsilon}{n}) $$
+
+$$\hat{\beta} = \beta +(\frac{X'X}{n})^{-1}(\frac{X'\epsilon}{n})$$
+
+$$plim(\hat{\beta}) = plim\beta + plim(\frac{X'X}{n})^{-1}(\frac{X'\epsilon}{n}) $$
+
+$$plim(\hat{\beta}) =\beta + E[X'X]^{-1} E[X'\epsilon]$$
+</p>
+</div>
+
+<p>Pero $E[X'X]^{-1} = 0$, gracias al supuesto de no colinealidad perfecta y $E[X'\epsilon] = 0$, gracias al supuesto no correlación serial.</p>
+<div style="width:1150px">
+	<p>
+$$plim(\hat{\beta}) = \beta$$
+</p>
+</div>
+
+<p>Veamos como sería en Stata</p>
+
+
+		<div class="col-6 col-12-medium">
+
+			</div>
+
+
+
+		<div class="col-6 col-12-medium imp-medium">
+
+	</div>
+</div>
+
+<div class="container">
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+
+		<pre><code>
+<strong style="color:blue">clear</strong>
+<strong style="color:blue">set</strong> obs 10000
+<strong style="color:blue">gen</strong> N=.
+<strong style="color:blue">gen</strong> B1_store=.
+<strong style="color:blue">gen</strong> poblacionx=runiform(0,5)
+<strong style="color:blue">gen</strong> epsilon=rnormal(0,1)
+<strong style="color:blue">gen</strong> poblaciony=0.8*poblacionx+epsilon
+
+		</code></pre>
+
+		</div>
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/consis.jpg" alt="" /></span>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+			<pre><code>
+<strong style="color:blue">qui forvalues</strong> i = 5 10 to 10000{
+
+<strong style="color:blue">set</strong> obs 10000
+<strong style="color:blue">gen</strong> random= runiform()
+<strong style="color:blue">sort</strong> random
+<strong style="color:blue">mata:</strong> ym = st_data((1,`i'), "poblaciony")
+<strong style="color:blue">mata:</strong> xm = st_data((1,`i'), "poblacionx")
+<strong style="color:blue">mata:</strong> betaest = invsym(xm'xm)*xm'ym
+<strong style="color:blue">mata:</strong> betaest
+<strong style="color:blue">mata</strong> st_numscalar("beta_1" , betaest)
+<strong style="color:blue">local</strong> coef1= beta_1
+<strong style="color:blue">replace</strong> B1_store= `coef1'  in `i'
+<strong style="color:blue">replace</strong> N=`i' in `i'
+<strong style="color:blue">drop</strong> random
+}
+
+</code></pre>
+
+		</div>
+
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/inses2.jpg" alt="" /></span>
+		</div>
+	</div>
+	</div>
+
+		<div class="container">
+	<div class="row gtr-150">
+		<div class="col-6 col-12-medium">
+			<p></p>
+			<h1></h1>
+
+		<pre><code>
+<strong style="color:blue">twoway</strong> 	 (scatter B1_store N)
+</code></pre>
+		</div>
+		<div class="col-6 col-12-medium imp-medium">
+			<span class="image fit"><img src="images/consis1.jpg" alt="" /></span>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+<div class="row gtr-150">
+<p>Aquí logramos ver que a medida que aumenta el tamaño de la muestra (N), nuestro estimador se acerca mas al valor 0.8 (el valor poblacional que habíamos establecido). En otras palabras,
+	mientras se cumplan los supuestos de Gauss Markov (específicamente no colinealidad perfecta y no correlación serial), el estimador de MCO será consistente.
+</p>
+
+
+</div>
+</div>
+
+
+</div>
+
+
+
+<div class="container">
+
+<h3>Bibliografía:</h3>
+<ul>
+<li> Verbeek, M. (2004), A Guide to Modern Econometrics.</li>
+<li> Wooldridge, Jeffrey M. (2018), Introductory Econometrics: A Modern Approach, Sixth Edition, Cengage Learning.</li>
+<li> Montenegro, A. (2018), Econometría Intermedia y Básica.</li>
+
+</ul>
+</div>
+
+
+
+
+
 			</section>
 
 		<!-- Two -->
 
 
 		<!-- Three -->
-			<section id="three" class="main style1 special">
-				<div class="container">
-					<header class="major">
-						<h2>Monitorias</h2>
-					</header>
-					<div class="row gtr-150">
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic07.jpg" alt="" /></span>
-							<h3>Econometría Basica</h3>
-						<!--	<p> Formas funcionales, pruebas de significancia, variables binarias. Acá encontrarán un resumen corto del curso de Econometría Basica.</p>-->
-							<ul class="actions special">
-								<li><a href="EconometriaBasica.html" class="button">Más</a></li>
-							</ul>
-						</div>
-
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic03.jpg" alt="" /></span>
-							<h3>Exogeneidad Estricta</h3>
-							<p></p>
-							<ul class="actions special">
-								<li><a href="A1.html" class="button">Más</a></li>
-							</ul>
-						</div>
-							<!--
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pica3.jpg" alt="" /></span>
-							<h3>Colinealidad Imperfecta</h3>
-							<p>
-						</p>
-							<ul class="actions special">
-								<li><a href="A2.html" class="button">Más</a></li>
-							</ul>
-						</div>
-
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/pic05.jpg" alt="" /></span>
-						<h3>Perturbaciones Esféricas </h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="A3.html" class="button">Más</a></li>
-						</ul>
-					</div>
-
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/picnormal.jpg" alt="" /></span>
-						<h3>Normalidad</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="A4.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					-->
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/FWL.jpg" alt="" /></span>
-						<h3>Teorema de Frisch Waugh Lovell</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="TeoremaFWL.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/montecarlo.jpg" alt="" /></span>
-						<h3>Simulaciones de Montecarlo</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="Montecarlo.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					</div>
-				</div>
-			</section>
 
 		<!-- Four -->
-		<!--
-
 			<section id="four" class="main style2 special">
 				<div class="container">
 					<header class="major">
-						<h2>Sobre mi</h2>
+						<h2>Bases y do files</h2>
 					</header>
-					<p>Mi nombre es Juan Esteban Rincón, estudiante de economía de la pontificia Universidad Javeriana.</p>
+
 					<ul class="actions special">
-						<li><a href="#" class="button wide primary">Sign Up</a></li>
+						<li><a href="Montecarlo.zip" class="button wide primary">Descargar</a></li>
+						<li><a href="index.html" class="button wide">Pagina principal</a></li>
 					</ul>
 				</div>
+
+
+
+
+
+
+
 			</section>
--->
+
 		<!-- Five -->
 		<!--
 			<section id="five" class="main style1">
