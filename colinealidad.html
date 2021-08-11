@@ -2,7 +2,7 @@
 
 <html>
 	<head>
-		<title>Econometría Avanzada</title>
+		<title>Colinealidad Imperfecta</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -14,14 +14,19 @@
 			<section id="header">
 				<div class="inner">
 					<span class="icon solid major fa-book-reader"></span>
-					<h1>Monitoria <strong>Econometría Avanzada</strong><br />
+					<h1>Supuesto: 2<br /><strong>Colinealidad Imperfecta</strong>
 					</h1>
-					<p>Pontificia Universidad Javeriana</br>Juan Esteban Rincón Poveda</p>
-					<ul class="actions special">
-						<li><a href="#one" class="button scrolly">Inicio</a></li>
-					</ul>
+					<p>Pontificia Universidad Javeriana</p>
+
 				</div>
 			</section>
+			<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+			<script>
+			MathJax = {
+				tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+			};
+			</script>
+			<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 
 		<!-- One -->
 			<section id="one" class="main style1">
@@ -29,120 +34,104 @@
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 							<header class="major">
-								<h2>Monitoria<br />
-								Econometría Avanzada</h2>
+								<h2>Colinealidad Imperfecta</h2>
 							</header>
-							<p>Acá encontrarán algunos ejercicios y explicaciónes realizadas usando el software  Stata  para la  clase de econometría avanzada. Específicamente encontraran demostraciones, simulaciones y explicaciónes de métodos
-							como lo son variables instrumentales, logit, probit, entre otros que buscan apoyar el aprendizaje del curso.
-						</p>
-						</div>
+							</div>
+
+							<p>
+
+Este supuesto hace referencia a que nuestros regresores deben ser linealmente independientes. Matemáticamente esto significa que el inverso de $(X'X)^{-1}$ existe. </br>
+
+La independencia lineal significa que cada variable aporta información adicional en la regresión; esto es, que una variable explicativa no es un múltiplo de otra ni una combinación lineal de otras (Montenegro, 2018).</br>
+
+En la practica nuestros regresores podrán estar correlacionados entre ellos siempre y cuando uno no sea una combinación lineal de otro.</br>	</p>
+
+
+<h3>¿Porque no podemos tener regresores con colinealidad perfecta?</h3>
+	<p>
+Esto hace que el calculo de $(X'X)^{-1}$ sea imposible dado que obtendremos un determinante de 0. Dado esto tendremos infinitas soluciones para  $ \beta = (X'X)^{-1}X'Y$.
+
+	</p>
+
+<h3>¿Que pasa  cuando  hay multicolinelidad?</h3>
+<p>
+Si la multicolinealidad no es perfecta no deberíamos tener mayor problema (los estimadores de MCO siguen siendo MELI). Aun así, cuando presentamos problemas de multicolinealidad veremos que nuestros estadísticos t tienden a indicar no  significancia estadística. Esto ocurre dado que los errores estándar de la regresión tienden a aumentar bajo este problema.
+
+</p>
+<div>
+<h3>¿Como detectar multicolinearidad?</h3>
+
+<ul>
+<li> Alta correlacion entre los regresores</li>
+<li> R cuadrado alto con estadisticos t bajos</li>
+<li> Factor de incremento de varianza alto (VIF > 8)</li>
+</ul>
+</div>
+
+
+
+
+
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/pic01.png" alt="" /></span>
 						</div>
 					</div>
 				</div>
+
+				<div class="container">
+					<p>Pendiente</p>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+
+<strong style="color:blue">clear</strong>
+
+
+						</code></pre>
+
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/F.jpg" alt="" /></span>
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<div class="container">
+
+				<h3>Bibliografía:</h3>
+				<ul>
+				<li> Verbeek, M. (2004), A Guide to Modern Econometrics.</li>
+				<li> Wooldridge, Jeffrey M. (2018), Introductory Econometrics: A Modern Approach, Sixth Edition, Cengage Learning.</li>
+				<li> Montenegro, A. (2018), Econometría Intermedia y Básica.</li>
+
+				</ul>
+				</div>
+
 			</section>
 
 		<!-- Two -->
 
 
 		<!-- Three -->
-			<section id="three" class="main style1 special">
-				<div class="container">
-					<header class="major">
-						<h2>Monitorias</h2>
-					</header>
-					<div class="row gtr-150">
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic07.jpg" alt="" /></span>
-							<h3>Econometría Basica</h3>
-						<!--	<p> Formas funcionales, pruebas de significancia, variables binarias. Acá encontrarán un resumen corto del curso de Econometría Basica.</p>-->
-							<ul class="actions special">
-								<li><a href="EconometriaBasica.html" class="button">Más</a></li>
-							</ul>
-						</div>
 
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pic03.jpg" alt="" /></span>
-							<h3>Exogeneidad Estricta</h3>
-							<p></p>
-							<ul class="actions special">
-								<li><a href="A1.html" class="button">Más</a></li>
-							</ul>
-						</div>
-							<!--
-						<div class="col-4 col-12-medium">
-							<span class="image fit"><img src="images/pica3.jpg" alt="" /></span>
-							<h3>Colinealidad Imperfecta</h3>
-							<p>
-						</p>
-							<ul class="actions special">
-								<li><a href="A2.html" class="button">Más</a></li>
-							</ul>
-						</div>
-
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/pic05.jpg" alt="" /></span>
-						<h3>Perturbaciones Esféricas </h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="A3.html" class="button">Más</a></li>
-						</ul>
-					</div>
-
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/picnormal.jpg" alt="" /></span>
-						<h3>Normalidad</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="A4.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					-->
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/pica3.jpg" alt="" /></span>
-						<h3>Colinealidad Imperfeca</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="colinealidad.html" class="button">Más</a></li>
-						</ul>
-					</div>
-
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/FWL.jpg" alt="" /></span>
-						<h3>Teorema de Frisch Waugh Lovell</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="TeoremaFWL.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					<div class="col-4 col-12-medium">
-						<span class="image fit"><img src="images/montecarlo.jpg" alt="" /></span>
-						<h3>Simulaciones de Montecarlo</h3>
-						<p></p>
-						<ul class="actions special">
-							<li><a href="Montecarlo.html" class="button">Más</a></li>
-						</ul>
-					</div>
-					</div>
-				</div>
-			</section>
 
 		<!-- Four -->
-		<!--
-
 			<section id="four" class="main style2 special">
 				<div class="container">
 					<header class="major">
-						<h2>Sobre mi</h2>
+						<h2>Bases y do files</h2>
 					</header>
-					<p>Mi nombre es Juan Esteban Rincón, estudiante de economía de la pontificia Universidad Javeriana.</p>
+
 					<ul class="actions special">
-						<li><a href="#" class="button wide primary">Sign Up</a></li>
+						<li><a href="FWL.do" download="FWL.zip" class="button wide primary">Descargar</a></li>
+						<li><a href="index.html" class="button wide">Pagina principal</a></li>
 					</ul>
 				</div>
 			</section>
--->
+
 		<!-- Five -->
 		<!--
 			<section id="five" class="main style1">
