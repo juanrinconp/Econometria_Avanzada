@@ -69,6 +69,41 @@ Si la multicolinealidad no es perfecta no deberíamos tener mayor problema (los 
 </div>
 
 
+<div>
+
+<h3>Factor de Incremento de Varianza</h3>
+<p></p>
+Tomando la varianza de los estimadores  de OLS:
+</p>
+
+$$Var(\hat{\beta_{1}}) = \left(\frac{\sigma^{2}}{\sum (X_{i} - \bar{X})^{2}}\right)\left(\frac{1}{(1-r^{2})}\right)$$
+
+<p>
+Veremos que el VIF es este termino a la derecha de la formula de la varianza, el cual puede estar afectando nuestra varianza cuando tenemos problemas de multicolinealidad.</p>
+
+$$VIF  = \frac{1}{(1-r^{2})}$$
+<p>
+
+En el caso de una regresión  simple, este $r^{2}$ sera:
+
+</p>
+
+
+$$ r^{2} = [Corr(x_{1}, x_{2})]^{2} $$
+
+
+<p>
+En el caso de una regresión múltiple, este $r^{2}$ es el $R^{2}$de la regresión de $x_{1}$ en los demás regresores, siendo $x_{1}$ el regresor que creemos que esta muy correlacionado con los demás.
+</p>
+
+<p>
+De esta forma vemos que cuando este termino $r^{2}$ es muy grande (recordemos que este numero estará entre 0 y 1), el denominador del VIF tendera a acercarse a 0 y el VIF tendera a aumentar, aumentando de esta forma la varianza de nuestros estimadores.
+
+
+</p>
+
+</div>
+
 
 
 
@@ -78,23 +113,113 @@ Si la multicolinealidad no es perfecta no deberíamos tener mayor problema (los 
 				</div>
 
 				<div class="container">
-					<p>Pendiente</p>
+					<p>Veamoslo en stata</br></p>
+					<p>Usando la base de datos bwght de Wooldridge vamos a estimar un modelo que nos ayude a ver el efecto de los cigarrillos sobre el peso de los recién nacidos. Uno primer modelo que podríamos usar es el siguiente, donde incluimos regresores con información de el precio de  los cigarrillos, impuestos a los cigarrillos y el consumo diario de cigarrillos: </p>
 
 					<div class="row gtr-150">
 						<div class="col-6 col-12-medium">
 						<pre><code>
 
-<strong style="color:blue">clear</strong>
+<strong style="color:blue">reg</strong>  bwght fatheduc motheduc faminc male cigs cigtax cigprice
 
 
 						</code></pre>
 
 						</div>
 						<div class="col-6 col-12-medium imp-medium">
-							<span class="image fit"><img src="images/F.jpg" alt="" /></span>
+							<span class="image fit"><img src="images/A21.png" alt="" /></span>
+
 						</div>
+						<p>Como podemos ver, las variables de cigarillos tienden a no ser significativas, pero tenemos la sospecha de multicolinelidad. Veamos si es el caso:</p>
+
 					</div>
 				</div>
+
+				<div class="container">
+					<p>Calculemos los coeficientes de correlación de nuestros regresores. Cabe resaltar que esto no es un test estadístico con valores críticos, pero puede ayudarnos a ver  si nuestras variables están altamente correlacionadas entre ellas.</p>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+
+<strong style="color:blue">corr</strong>  fatheduc motheduc faminc male cigs cigtax cigprice
+
+						</code></pre>
+
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/A22.png" alt="" /></span>
+
+						</div>
+						<p>Vemos una correlación muy alta entre algúnos de nuestros regressores. Veamos el VIF manualmente.</p>
+
+					</div>
+				</div>
+
+
+				<div class="container">
+					<p>Como sabemos el termino de $ r^{2} $ en la formula del VIF viene del coeficiente de la regresión de $ x_{1} $ en
+					los démas regresores.</p>
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+
+<strong style="color:blue">reg</strong> cigtax fatheduc motheduc faminc male cigs cigprice
+
+						</code></pre>
+
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/A23.png" alt="" /></span>
+
+						</div>
+						<p> El R cuadrado es de 0.7805. Con este valor podemos calcular el VIF</p>
+
+					</div>
+				</div>
+
+				<div class="container">
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+
+<strong style="color:blue">dis </strong> 1/(1-0.7805)
+
+						</code></pre>
+
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/A24.png" alt="" /></span>
+
+						</div>
+						<p> De aquí sabremos que la varianza de nuestro estimador de cigs es 4.5 veces mas grande gracias a la multicolinealidad.</p>
+
+					</div>
+				</div>
+				<div class="container">
+					<p> Una forma mas sencilla de llegar a este resultado es usando el comando "vif" en stata justo después de realizar la regresión que habíamos planteado originalmente:</p>
+
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+						<pre><code>
+
+<strong style="color:blue">qui reg</strong> bwght fatheduc motheduc faminc male cigs cigtax cigprice
+
+<strong style="color:blue">vif</strong>
+
+						</code></pre>
+
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+							<span class="image fit"><img src="images/A25.png" alt="" /></span>
+
+						</div>
+						<p> Ahora podemos ver el VIF de todos los demas regresores.</p>
+
+					</div>
+				</div>
+
 
 
 
@@ -126,7 +251,7 @@ Si la multicolinealidad no es perfecta no deberíamos tener mayor problema (los 
 					</header>
 
 					<ul class="actions special">
-						<li><a href="FWL.do" download="FWL.zip" class="button wide primary">Descargar</a></li>
+						<li><a href="FWL.do" download="Multicolinealidad.zip" class="button wide primary">Descargar</a></li>
 						<li><a href="index.html" class="button wide">Pagina principal</a></li>
 					</ul>
 				</div>
