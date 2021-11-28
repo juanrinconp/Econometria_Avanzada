@@ -1,3 +1,3 @@
 # Econometria_Avanzada
-Sitio Web para dictar la monitoria de Econometría Avanzada.
+Sitio Web con explicaciones teoricas y practicas de Econometría.
 https://juanrinconp.github.io/Econometria_Avanzada/
